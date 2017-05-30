@@ -8,13 +8,12 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 import tkinter as tk
 import json
 from beijing import Beijing
-from gradient import getColor
 
-def onclick(event):
+def onmousemove(event):
     #print(' x=%d, y=%d, xdata=%f, ydata=%f' %( event.x, event.y, event.xdata, event.ydata))
     xy = list((event.xdata, event.ydata))
     polygons = []
-    for region in map.country_region:
+    for region in map.county_region:
         polygons.append(Polygon(region))
 
     for i, poly in enumerate(polygons):
@@ -34,37 +33,23 @@ if __name__ == "__main__":
                   resolution='i', projection='tmerc', lat_0=39.76, lon_0=115.45, ax=axes)
     canvas = FigureCanvasTkAgg(f, master=root)
     canvas.get_tk_widget().pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
-    map.readshapefile('beijingMapinfo\county_region', 'county_region')
-    cid = f.canvas.mpl_connect('motion_notify_event', onclick)
+    cid = f.canvas.mpl_connect('motion_notify_event', onmousemove)
 
-    with open(r'frequencydata\measurements.json') as json_file:
-        datas = json.load(json_file)
 
-    datelist=[]
-    for date in range(223,229):
-        datelist.append(date)
-    for date in range(301,331):
-        datelist.append(date)
-    for date in range(401,427):
-        datelist.append(date)
+    # datelist=[]
+    # datelist.extend(list(range(223,229)))
+    # datelist.extend(list(range(301,331)))
+    # datelist.extend(list(range(401,427)))
+    #
+    # # for date in datelist:
+    # date = datelist[0]
+    # day=str(20170000+date)
+    day = '20170305'
 
-    for date in datelist:
-        day=str(20170000+date)
-        daydatas=datas[day]
-        frequencyvalue=sorted(list(daydatas.values()))
-        sorteddata=sorted(daydatas.items(),key=lambda item:item[1])
-        print(sorteddata)
-        listindex=0
-        for val in sorteddata:
-            if val[1]>=80000:
-                radio=1
-            else :
-                radio = val[1]/80000
-            print(getColor(radio))
-            map.fillPolygon(map.country_region[int(val[0])], color=getColor(radio), fill_color='aqua', ax=axes)
-            listindex += 1
-            canvas.show()
-            f.savefig(day+'.png')
+    map.countyHotmap(axes,day)
+
+    canvas.show()
+        # f.savefig(day+'.png')
 
     toolbar = NavigationToolbar2TkAgg(canvas, root)
     toolbar.update()

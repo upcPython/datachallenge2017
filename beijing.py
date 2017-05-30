@@ -1,9 +1,55 @@
 from mpl_toolkits.basemap import Basemap
 from matplotlib.patches import Ellipse, Circle, Polygon, FancyArrowPatch
 import matplotlib.pyplot as plt
+import json
+from gradient import getColor
 
 class Beijing(Basemap):
-    def fillPolygon(self,xy,color = None, fill_color = None, ax=None,zorder=None,alpha=None):
+    def __init__(self, llcrnrlon=None, llcrnrlat=None,
+                 urcrnrlon=None, urcrnrlat=None,
+                 llcrnrx=None, llcrnry=None,
+                 urcrnrx=None, urcrnry=None,
+                 width=None, height=None,
+                 projection='cyl', resolution='c',
+                 area_thresh=None, rsphere=6370997.0,
+                 ellps=None, lat_ts=None,
+                 lat_1=None, lat_2=None,
+                 lat_0=None, lon_0=None,
+                 lon_1=None, lon_2=None,
+                 o_lon_p=None, o_lat_p=None,
+                 k_0=None,
+                 no_rot=False,
+                 suppress_ticks=True,
+                 satellite_height=35786000,
+                 boundinglat=None,
+                 fix_aspect=True,
+                 anchor='C',
+                 celestial=False,
+                 round=False,
+                 epsg=None,
+                 ax=None):
+        super(Beijing,self).__init__(llcrnrlon, llcrnrlat,
+                                     urcrnrlon, urcrnrlat,
+                                     llcrnrx, llcrnry,
+                                     urcrnrx, urcrnry,
+                                     width, height,
+                                     projection, resolution,
+                                     area_thresh, rsphere,
+                                     ellps, lat_ts,
+                                     lat_1, lat_2,
+                                     lat_0, lon_0,
+                                     lon_1, lon_2,
+                                     o_lon_p, o_lat_p,
+                                     k_0, no_rot,
+                                     suppress_ticks,
+                                     satellite_height,
+                                     boundinglat,
+                                     fix_aspect, anchor, celestial,
+                                     round, epsg, ax)
+        self.readshapefile('beijingMapinfo\county_region', 'county_region')
+        with open(r'config\measurements.json') as json_file:
+            self.countySum = json.load(json_file)
+    def fillPolygon(self,xy, fill_color = None, ax=None,zorder=None,alpha=None):
         if self.resolution is None:
             raise AttributeError('there are no boundary datasets associated with this Basemap instance')
         # get current axes instance (if none specified).
@@ -18,13 +64,10 @@ class Beijing(Basemap):
         # ** turn this off for now since it prevents continents that
         # fill the whole map from being filled **
         # xy = list(zip(xa.tolist(),ya.tolist()))
-        if self.coastpolygontypes[npoly] not in [2,4]:
-            poly = Polygon(xy,facecolor=color,edgecolor=color,linewidth=0)
-        else: # lakes filled with background color by default
-            if fill_color is None:
-                poly = Polygon(xy,facecolor=axisbgc,edgecolor=axisbgc,linewidth=0)
-            else:
-                poly = Polygon(xy,facecolor=fill_color,edgecolor=fill_color,linewidth=0)
+        if fill_color is None:
+            poly = Polygon(xy,facecolor=axisbgc,edgecolor=axisbgc,linewidth=0)
+        else:
+            poly = Polygon(xy,facecolor=fill_color,edgecolor=fill_color,linewidth=0)
         if zorder is not None:
             poly.set_zorder(zorder)
         if alpha is not None:
@@ -38,6 +81,14 @@ class Beijing(Basemap):
         polys,c = self._cliplimb(ax,polys)
         return polys
 
+    def countyHotmap(self,ax, aDay='20170304'):
+        for key, val in self.countySum[aDay].items():
+            if val >= 80000:
+                radio = 1
+            else:
+                radio = val / 80000
+            # print(getColor(radio))
+            self.fillPolygon(self.county_region[int(key)], fill_color=getColor(radio), ax=ax)
     def project(self,x,y):
         '''
         :param x: longitude
