@@ -28,6 +28,14 @@ class Beijing(Basemap):
                  round=False,
                  epsg=None,
                  ax=None):
+        llcrnrlon = 115.3
+        llcrnrlat = 39.4
+        urcrnrlon = 117.6
+        urcrnrlat = 41.1
+        resolution = 'i'
+        projection = 'tmerc'
+        lat_0 = 39.76
+        lon_0 = 115.45
         super(Beijing,self).__init__(llcrnrlon, llcrnrlat,
                                      urcrnrlon, urcrnrlat,
                                      llcrnrx, llcrnry,

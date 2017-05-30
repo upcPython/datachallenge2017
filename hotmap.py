@@ -29,8 +29,8 @@ if __name__ == "__main__":
     root = tk.Tk()
     f = Figure(figsize=(5, 5), dpi=100)
     axes = f.add_subplot(111)
-    map = Beijing(llcrnrlon=115.3, llcrnrlat=39.4, urcrnrlon=117.6, urcrnrlat=41.1,
-                  resolution='i', projection='tmerc', lat_0=39.76, lon_0=115.45, ax=axes)
+    map = Beijing(ax=axes)
+    print(map.llcrnrlat)
     canvas = FigureCanvasTkAgg(f, master=root)
     canvas.get_tk_widget().pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
     cid = f.canvas.mpl_connect('motion_notify_event', onmousemove)
