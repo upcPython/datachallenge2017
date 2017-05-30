@@ -17,4 +17,4 @@ def getColor(radio):
 
 if __name__ == "__main__":
     for i in range(11):
-        print(getColor(i/100))
+        print(getColor(i/10))
