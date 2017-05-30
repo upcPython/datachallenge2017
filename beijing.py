@@ -66,4 +66,13 @@ if __name__ == "__main__":
 
     map.readshapefile('beijingMapinfo\county_region', 'county_region')
     map.fillPolygon(map.county_region[0],color='r',fill_color='aqua')
+
+    x = [116.46198273, 115.57, 115.58, 116.313432, 116.445303, 116.289501, 116.289501]
+    y = [39.91296005, 39.82, 39.83, 39.970475, 39.927248, 39.868793, 39.868793]
+    xy = map.projectList(x, y)
+    print(xy)
+
+    print(map.project(116.46198273,39.91296005))
+
+
     plt.show()
