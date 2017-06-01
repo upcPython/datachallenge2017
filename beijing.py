@@ -3,6 +3,12 @@ from matplotlib.patches import Ellipse, Circle, Polygon, FancyArrowPatch
 import matplotlib.pyplot as plt
 import json
 from gradient import getColor
+from matplotlib.cbook import is_scalar, dedent
+from matplotlib.collections import LineCollection, PolyCollection
+import os
+
+mapdir = 'beijingMapinfo/'
+configdir = 'config/'
 
 class Beijing(Basemap):
     def __init__(self, llcrnrlon=None, llcrnrlat=None,
@@ -28,10 +34,6 @@ class Beijing(Basemap):
                  round=False,
                  epsg=None,
                  ax=None):
-        llcrnrlon = 115.3
-        llcrnrlat = 39.4
-        urcrnrlon = 117.6
-        urcrnrlat = 41.1
         resolution = 'i'
         projection = 'tmerc'
         lat_0 = 39.76
@@ -54,8 +56,8 @@ class Beijing(Basemap):
                                      boundinglat,
                                      fix_aspect, anchor, celestial,
                                      round, epsg, ax)
-        self.readshapefile('beijingMapinfo\county_region', 'county_region')
-        with open(r'config\measurements.json') as json_file:
+        self.readshapefile(mapdir+'county_region', 'county_region')
+        with open(configdir+'measurements.json') as json_file:
             self.countySum = json.load(json_file)
     def fillPolygon(self,xy, fill_color = None, ax=None,zorder=None,alpha=None):
         if self.resolution is None:
@@ -275,6 +277,16 @@ class Beijing(Basemap):
         self.__dict__[name+'_info']=attributes
         return info
 
+    def pointmarked(self,file='counties.csv'):
+        import pandas as pd
+        file = configdir+file
+        csv=pd.read_csv(file)
+        name = [name for name in csv['NAME']]
+        x = csv['X'].tolist()
+        y = csv['Y'].tolist()
+        for i in range(len(name)):
+            X,Y=self(float(x[i]),float(y[i]))
+            plt.text(X,Y,name[i],horizontalalignment ='center')
 
 if __name__ == "__main__":
     map= Beijing(llcrnrlon=115.3,llcrnrlat=39.4,urcrnrlon=117.6,urcrnrlat=41.1,

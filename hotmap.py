@@ -29,7 +29,8 @@ if __name__ == "__main__":
     root = tk.Tk()
     f = Figure(figsize=(5, 5), dpi=100)
     axes = f.add_subplot(111)
-    map = Beijing(ax=axes)
+
+    map = Beijing(llcrnrlon = 115.3, llcrnrlat = 39.4, urcrnrlon = 117.6, urcrnrlat = 41.1,ax=axes)
     print(map.llcrnrlat)
     canvas = FigureCanvasTkAgg(f, master=root)
     canvas.get_tk_widget().pack(side=tk.LEFT, fill=tk.BOTH, expand=1)

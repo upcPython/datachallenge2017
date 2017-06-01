@@ -1,7 +1,7 @@
 from tkinter import *
 import calendar
 from datetime import *
-from matplotlib.patches import Polygon
+# from matplotlib.patches import Polygon
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 import tkinter as tk
@@ -10,7 +10,7 @@ from beijing import Beijing
 
 class DateCtrl(Frame):
     def __init__(self, master=None, command=None, defaultDay=None):
-        Frame.__init__(self, master=root)
+        Frame.__init__(self, master)
         self.count = 0
         self.master = master
         self.master.size = (100, 110)
@@ -139,7 +139,7 @@ if __name__ == '__main__':
     frame1.pack()
     f = Figure(figsize=(8, 8), dpi=100)
     axes = f.add_subplot(111)
-    map = Beijing(ax=axes)
+    map = Beijing(llcrnrlon = 115.3, llcrnrlat = 39.4, urcrnrlon = 117.6, urcrnrlat = 41.1, ax=axes)
     canvas = FigureCanvasTkAgg(f, master=frame1)
     canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
     # cid = f.canvas.mpl_connect('motion_notify_event', onmousemove)
