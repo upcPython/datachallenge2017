@@ -9,14 +9,17 @@ from beijing import Beijing
 
 
 class DateCtrl(Frame):
-    def __init__(self, master=None, cnf={}, **kw):
+    def __init__(self, master=None, command=None, defaultDay=None):
         Frame.__init__(self, master=root)
         self.count = 0
         self.master = master
         self.master.size = (100, 110)
         # self.master.resizable(False, False)
-        self.time = "2017-3-4"
-        self.date = datetime.strptime(self.time, '%Y-%m-%d')
+        if defaultDay is None:
+            defaultDay = time.strftime('%Y-%m-%d',time.localtime(time.time()))
+        self.onClick = command
+        command(defaultDay)
+        self.date = datetime.strptime(defaultDay, '%Y%m%d')
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
         self.grid(sticky=W + E + N + W)
@@ -146,8 +149,7 @@ if __name__ == '__main__':
 
     frame.grid(row=0, rowspan=20)
 
-    mainfram = DateCtrl(root)
-    mainfram.onClick = onClick
+    mainfram = DateCtrl(root,onClick,'20170304')
     # tdt =datetime.strptime(str, '%Y-%m-%d %H:%M:%S')
     # mainfram.SetDate(tdt.replace(day=30))  # 试试重置日期
 
