@@ -5,8 +5,11 @@ import matplotlib.gridspec as gridspec
 from matplotlib import rcParams
 from dateAx import DateAx
 import matplotlib as mpl
+import cv2
 import numpy as np
+from matplotlib.widgets import Button
 from regionHotmap import RegionHotmap
+from themeRiver import ThemeRiver
 
 plt.rcParams['savefig.facecolor'] = "0.8"
 
@@ -23,6 +26,7 @@ def onMousePress(event):
     if event.inaxes.name=='date':#date control
         dateCtrl.onMousePressed(event)
         regionMap.draw(dateCtrl.day)
+        riverCtrl.draw(dateCtrl.day)
         # print(event.xdata,event.ydata)
     if event.inaxes.name=='map':#map control
         regionMap.onMousePressed(event)
@@ -69,23 +73,42 @@ if __name__ == "__main__":
     # print(w,h)
     axtitle.text(0.5,0.5,'垃圾短信数据分析系统', color = 'w', fontsize=40,horizontalalignment='center',verticalalignment='center')
 
+    gs2 = gridspec.GridSpec(3, 1)
+
+    axr1 = fig.add_subplot(gs2[2])
+    example_plot(axr1)
+    axr1.set_title("")
+    axr1.set_xlabel("")
+
+    axr2 = fig.add_subplot(gs2[1])
+    example_plot(axr2)
+    axr2.set_title("")
+    axr2.set_xlabel("")
+
+    axdate = fig.add_subplot(gs2[0])
+    axdate.name = 'date'
+    axdate.axis('off')
+    dateCtrl = DateAx(axdate)
+    gs2.tight_layout(fig, rect=[0.7, 0, 1, 0.9])
+
+    gs1 = gridspec.GridSpec(2, 1)
+    axriver = fig.add_subplot(gs1[0])
+    axriver.name = 'river'
+    axriver.patch.set_facecolor('b')
+    riverCtrl = ThemeRiver(axriver)
+    # axriver.axis('off')
+    riverCtrl.draw(dateCtrl.day)
     # axtitle.set_title('垃圾短信数据分析系统')
     # example_plot(axtitle)
-    gs1 = gridspec.GridSpec(2, 1)
-    axdate = fig.add_subplot(gs1[0])
-    axdate.name = 'date'
-    # axdate.axis('off')
-    ax2 = fig.add_subplot(gs1[1])
-    ax2.axis('off')
-    dateCtrl = DateAx(axdate)
-    # data = np.random.randn(7 * 10)
-    # data = data.reshape((10, 7))
-    # dateCtrl.readdata(data)
 
     # example_plot(ax1)
+    ax2 = fig.add_subplot(gs1[1])
+    ax2.axis('off')
     example_plot(ax2)
 
     gs1.tight_layout(fig, rect=[0, 0, 0.3, 0.9])
+
+
 
     rect = 0.3, 0.3, 0.4, 0.6
     axmap = fig.add_axes(rect)
@@ -94,13 +117,31 @@ if __name__ == "__main__":
     axmap.axis('off')
     regionMap = RegionHotmap(axmap)
     regionMap.draw(dateCtrl.day)
-    ax_colorbar = fig.add_axes([0.65, 0.354, 0.012, 0.49])
+    ax_colorbar = fig.add_axes([0.67, 0.354, 0.011, 0.53])
     norm = mpl.colors.Normalize(vmin=0, vmax=8)
     cmap = plt.cm.Blues
     cb = mpl.colorbar.ColorbarBase(ax_colorbar, cmap=cmap,
                                    norm=norm,
                                    orientation='vertical')
     cb.set_label('（万）', fontdict={'size': 15})
+
+    homeimg = cv2.imread('image\home.png')
+    enlargeimg = cv2.imread('image\enlarge.png')
+    shrinkimg = cv2.imread('image\shrink.png')
+    translationimg = cv2.imread('image/translation.png')
+    homeset = plt.axes([0.31, 0.81, 0.035, 0.035])
+    enlargeset = plt.axes([0.31, 0.76, 0.035, 0.035])
+    shrinkset = plt.axes([0.31, 0.71, 0.035, 0.035])
+    translationset = plt.axes([0.31, 0.66, 0.035, 0.035])
+    home = Button(homeset, '', homeimg, hovercolor='0.2')
+    enlarge = Button(enlargeset, '', enlargeimg)
+    shrink = Button(shrinkset, '', shrinkimg)
+    translation = Button(translationset, '', translationimg)
+    home.on_clicked(RegionHotmap.on_homebutton_clicked)
+    enlarge.on_clicked(RegionHotmap.on_enlargebutton_clicked)
+    shrink.on_clicked(RegionHotmap.on_shrinkbutton_clicked)
+    translation.on_clicked(RegionHotmap.on_translationbutton_clicked)
+
 
     gs0 = gridspec.GridSpec(1, 2)
     axdate = fig.add_subplot(gs0[0])
@@ -112,16 +153,11 @@ if __name__ == "__main__":
     gs0.tight_layout(fig, rect=[0.3, 0, 0.7, 0.3])
     # ax1 = fig.add_subplot(gstitle[0])
     # gstitle.tight_layout(fig, rect=[0, 0.2, 1, 0.1])
-    gs2 = gridspec.GridSpec(3, 1)
 
-    for ss in gs2:
-        ax = fig.add_subplot(ss)
-        example_plot(ax)
-        ax.set_title("")
-        ax.set_xlabel("")
-
+    # example_plot(axr3)
+    # axr3.set_title("")
+    # axr3.set_xlabel("")
     # ax.set_xlabel("x-label", fontsize=12)
 
-    gs2.tight_layout(fig, rect=[0.7, 0, 1, 0.9])
     # gs2.tight_layout(fig, rect=[0.7, 0, 0.3, 0.9], h_pad=0.5)
     plt.show()

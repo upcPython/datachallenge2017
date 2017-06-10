@@ -78,6 +78,22 @@ class DateAx:
         self.ax.text(3.5, 1.5, '四月', color='y', alpha=0.4, fontsize=40, horizontalalignment='center',
                      verticalalignment='center')
 
+        self.ax.text(3.5, 1.5, '四月', color='y', alpha=0.4, fontsize=40, horizontalalignment='center',
+                     verticalalignment='center')
+        self.ax.text(0.5, 10.4, '日', color='k', alpha=1, fontsize=14, horizontalalignment='center',
+                     verticalalignment='center')
+        self.ax.text(1.5, 10.4, '一', color='k', alpha=1, fontsize=14, horizontalalignment='center',
+                     verticalalignment='center')
+        self.ax.text(2.5, 10.4, '二', color='k', alpha=1, fontsize=14, horizontalalignment='center',
+                     verticalalignment='center')
+        self.ax.text(3.5, 10.4, '三', color='k', alpha=1, fontsize=14, horizontalalignment='center',
+                     verticalalignment='center')
+        self.ax.text(4.5, 10.4, '四', color='k', alpha=1, fontsize=14, horizontalalignment='center',
+                     verticalalignment='center')
+        self.ax.text(5.5, 10.4, '五', color='k', alpha=1, fontsize=14, horizontalalignment='center',
+                     verticalalignment='center')
+        self.ax.text(6.5, 10.4, '六', color='k', alpha=1, fontsize=14, horizontalalignment='center',
+                     verticalalignment='center')
     def onMousePressed(self,event):
         if event.inaxes is not None:
             print(event.inaxes.name)
