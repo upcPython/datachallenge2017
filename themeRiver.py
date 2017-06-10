@@ -46,7 +46,7 @@ class ThemeRiver:
             #print(listcolor[i])
             a[i].set_facecolor(listcolor[i])
         plt.plot(facecolor='b')
-        legend = plt.legend(self.label,frameon=False, bbox_to_anchor=(-0.05, 1), ncol=1)
+        legend = plt.legend(self.label,frameon=False, bbox_to_anchor=(-0.06, 1), ncol=1)
         ltext = legend.get_texts()
         plt.setp(ltext, fontsize=12)
         plt.xlabel('(小时)')
