@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import math,os
+import os
 import pandas as pd
 from matplotlib import rcParams
 rcParams['font.sans-serif']=['SimHei']
