@@ -143,7 +143,7 @@ if __name__ == '__main__':
     # axes.set_ylim(bottom+right*2-right/2,bottom)
     # f.subplots_adjust(left=0.0, right=1, top=1, bottom=0.0)
     # f.set_figwidth(8)
-    beijing.pointmarked()
+    # beijing.pointmarked()
     # cid = f.canvas.mpl_connect('motion_notify_event', onmousemove)
 
     canvas_width,canvas_height = axes.dataLim.max

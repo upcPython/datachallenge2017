@@ -9,10 +9,11 @@ from math import log
 
 
 configdir = 'config/'
+mapRect=(115.3,39.4,117.6,41.1)
 class RegionHotmap:
     def __init__(self, ax):
         self.ax = ax
-        self.beijing = Beijing(llcrnrlon = 115.3, llcrnrlat = 39.4, urcrnrlon = 117.6, urcrnrlat = 41.1,ax=ax)
+        self.beijing = Beijing(llcrnrlon=mapRect[0], llcrnrlat=mapRect[1], urcrnrlon=mapRect[2], urcrnrlat=mapRect[3], ax=ax)
         self.controlKey = False
         self.readdata()
 
@@ -20,11 +21,16 @@ class RegionHotmap:
         with open(configdir+'measurements.json') as json_file:
             self.countySum = json.load(json_file)
         self.region = self.beijing.loadlines('county_region',linewidth=2.5)
-        # road3 = beijing.loadlines('level3road_polyline',linewidth=3.5)
-        # road2 = beijing.loadlines('level2road_polyline',linewidth=3.5)
+        # road6 = self.beijing.loadlines('level6road_polyline',linewidth=3.5,color='#edf8b1',linesalpha=0.2)
+        # road4 = self.beijing.loadlines('level4road_polyline',linewidth=3.5,color='#edf8b1',linesalpha=0.2)
+        # road3 = self.beijing.loadlines('level3road_polyline',linewidth=3.5,color='#edf8b1',linesalpha=0.2)
+        road2 = self.beijing.loadlines('level2road_polyline',linewidth=3.5,color='#edf8b1',linesalpha=0.2)
         self.road1 = self.beijing.loadlines('level1road_polyline',linewidth=1.5,color='#edf8b1',linesalpha=0.2)
         self.canvas_width,self.canvas_height = self.ax.dataLim.max
 
+        self.topic0 = self.beijing.loadlines('topic0',curdir='config/regionTopic',linewidth=1.5,color='r',linesalpha=0.9)
+        # self.topic1 = self.beijing.loadlines('topic1',curdir='config/regionTopic',linewidth=1.5,color='r',linesalpha=0.9)
+        self.topic2 = self.beijing.loadlines('topic2',curdir='config/regionTopic',linewidth=1.5,color='g',linesalpha=0.9)
     #     plt.sca(self.ax)
     #     plt.pcolor(data, cmap=plt.cm.Blues)
 
@@ -33,7 +39,12 @@ class RegionHotmap:
             print("none")
             return
         if event.button == 1:  # left button
-            self.onLeftClick(event)
+            if event.dblclick:
+                self.ax.set_xlim(0, self.canvas_width)
+                self.ax.set_ylim(0, self.canvas_height)
+                self.beijing.level = 1
+            else:
+                self.onLeftClick(event)
         elif event.button == 3:  # right button
             self.onRightClick(event)
     def countyHotmap(self, aDay='20170304'):
@@ -114,6 +125,21 @@ class RegionHotmap:
             self.controlKey = False
         # print(type(event.inaxes))
         # print(event.xdata,event.ydata)
+
+    def on_homebutton_clicked(self):
+        print("home button clicked")
+        self.ax.set_xlim(0, self.canvas_width)
+        self.ax.set_ylim(0, self.canvas_height)
+        self.beijing.level = 1
+
+    def on_enlargebutton_clicked(self):
+        print("enlarge button clicked")
+
+    def on_shrinkbutton_clicked(self):
+        print("shrink button clicked")
+
+    def on_translationbutton_clicked(self):
+        print("translation button clicked")
 if __name__ == "__main__":
     # t1 = np.arange(0, 5, 0.1)
     # t2 = np.arange(0, 5, 0.02)
