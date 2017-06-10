@@ -51,6 +51,9 @@ def onWheel(event):
     if event.inaxes.name=='map':#map control
         regionMap.onWheel(event)
     fig.canvas.draw()
+
+
+
 if __name__ == "__main__":
     rcParams['font.sans-serif'] = ['SimHei']
     rcParams['font.family'] = 'sans-serif'
@@ -139,10 +142,10 @@ if __name__ == "__main__":
     enlarge = Button(enlargeset, '', enlargeimg)
     shrink = Button(shrinkset, '', shrinkimg)
     translation = Button(translationset, '', translationimg)
-    home.on_clicked(RegionHotmap.on_homebutton_clicked)
-    enlarge.on_clicked(RegionHotmap.on_enlargebutton_clicked)
-    shrink.on_clicked(RegionHotmap.on_shrinkbutton_clicked)
-    translation.on_clicked(RegionHotmap.on_translationbutton_clicked)
+    home.on_clicked(regionMap.on_homebutton_clicked)
+    enlarge.on_clicked(regionMap.on_enlargebutton_clicked)
+    shrink.on_clicked(regionMap.on_shrinkbutton_clicked)
+    translation.on_clicked(regionMap.on_translationbutton_clicked)
 
 
     gs0 = gridspec.GridSpec(1, 2)

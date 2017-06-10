@@ -3,8 +3,10 @@ import matplotlib.pyplot as plt
 import math,os
 import pandas as pd
 from matplotlib import rcParams
+from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 rcParams['font.sans-serif']=['SimHei']
 rcParams['font.family']=['sans-serif']
+rcParams['axes.unicode_minus']=False
 class ThemeRiver:
     def __init__(self,ax):
         self.ax=ax
@@ -24,29 +26,32 @@ class ThemeRiver:
         return data
     def draw(self, aDay='20170304'):
         data=self.makedata(aDay)
+        max=0
+        for i in range(24):
+            for j in range(11):
+                if data[i][j]>max:
+                    max=data[i][j]
         plt.sca(self.ax)
         self.ax.collections = []
         a = plt.stackplot(range(24), data.T, baseline='wiggle')
-        a[0].set_facecolor('r')
-        a[1].set_facecolor('orange')
-        a[2].set_facecolor('yellow')
-        a[3].set_facecolor('#40fd14')
-        a[4].set_facecolor('#019529')
-        a[5].set_facecolor('#2afeb7')
-        a[6].set_facecolor('#d5ffff')
-        a[7].set_facecolor('#fa5ff7')
-        a[8].set_facecolor('#ffd1df')
-        a[9].set_facecolor('#fe7b7c')
-        a[10].set_facecolor('#770001')
+        listcolor=['r','orange','yellow','#40fd14','#019529','#2afeb7','#d5ffff','#fa5ff7','#ffd1df','#fe7b7c','#770001']
+        for i in range(11):
+            #print(listcolor[i])
+            a[i].set_facecolor(listcolor[i])
+        plt.plot(facecolor='b')
+       # plt.legend( self.label,frameon=False,bbox_to_anchor=(-0.15, 0.60), ncol=1,fontsize=10)
+        legend = plt.legend(self.label,frameon=False, bbox_to_anchor=(-0.15, 0.60), ncol=1,fontsize=10)
+        ltext = legend.get_texts()
+        plt.setp(ltext, fontsize='small', color='w')
 
-        plt.legend( self.label, bbox_to_anchor=(0.18, 0.45), ncol=1)
-
+        plt.xlim(0,24)
+        plt.ylim(-max*1.25,max*1.25)
 
 if __name__ == "__main__":
     fig = plt.figure()
     ax = fig.gca()
     # ax = plt.subplots(facecolor="dodgerblue")
     dataAx=ThemeRiver(ax)
-    name='20170304'
+    name='20170301'
     dataAx.draw(name)
     plt.show()
