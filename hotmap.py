@@ -13,7 +13,7 @@ def onmousemove(event):
     #print(' x=%d, y=%d, xdata=%f, ydata=%f' %( event.x, event.y, event.xdata, event.ydata))
     xy = list((event.xdata, event.ydata))
     polygons = []
-    for region in map.county_region:
+    for region in beijing.county_region:
         polygons.append(Polygon(region))
 
     for i, poly in enumerate(polygons):
@@ -30,13 +30,14 @@ if __name__ == "__main__":
     f = Figure(figsize=(5, 5), dpi=100)
     axes = f.add_subplot(111)
 
-    map = Beijing(llcrnrlon = 115.3, llcrnrlat = 39.4, urcrnrlon = 117.6, urcrnrlat = 41.1,ax=axes)
-    print(map.llcrnrlat)
+    beijing = Beijing(llcrnrlon = 115.3, llcrnrlat = 39.4, urcrnrlon = 117.6, urcrnrlat = 41.1,ax=axes)
+    beijing.readshapefileext('beijingMapinfo/county_region', 'county_region', color='#ff8080', linestyle='--')
+    # print(map.llcrnrlat)
     canvas = FigureCanvasTkAgg(f, master=root)
     canvas.get_tk_widget().pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
     cid = f.canvas.mpl_connect('motion_notify_event', onmousemove)
 
-
+    # axes.collections[0].set_visible(False)
     # datelist=[]
     # datelist.extend(list(range(223,229)))
     # datelist.extend(list(range(301,331)))
@@ -47,7 +48,7 @@ if __name__ == "__main__":
     # day=str(20170000+date)
     day = '20170305'
 
-    map.countyHotmap(axes,day)
+    beijing.countyHotmap(axes,day)
 
     canvas.show()
         # f.savefig(day+'.png')

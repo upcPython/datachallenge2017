@@ -10,7 +10,6 @@ import codecs
 import numpy as np
 
 mapdir = 'beijingMapinfo/'
-configdir = 'config/'
 
 class Beijing(Basemap):
     def __init__(self, llcrnrlon=None, llcrnrlat=None,
@@ -60,58 +59,7 @@ class Beijing(Basemap):
                                      fix_aspect, anchor, celestial,
                                      round, epsg, ax)
         # self.readshapefile(mapdir+'county_region', 'county_region')
-        with open(configdir+'measurements.json') as json_file:
-            self.countySum = json.load(json_file)
-    def fillPolygon(self,xy, fill_color = None, ax=None,zorder=None,alpha=None):
-        if self.resolution is None:
-            raise AttributeError('there are no boundary datasets associated with this Basemap instance')
-        # get current axes instance (if none specified).
-        ax = ax or self._check_ax()
-        # get axis background color.
-        axisbgc = ax.get_axis_bgcolor()
-        npoly = 0
-        polys = []#PolyCollection()
-        # xa, ya = list(zip(*map.county_region[0]))
-        # check to see if all four corners of domain in polygon (if so,
-        # don't draw since it will just fill in the whole map).
-        # ** turn this off for now since it prevents continents that
-        # fill the whole map from being filled **
-        # xy = list(zip(xa.tolist(),ya.tolist()))
-        if fill_color is None:
-            poly = Polygon(xy,facecolor=axisbgc,edgecolor=axisbgc,linewidth=0)
-        else:
-            poly = Polygon(xy,facecolor=fill_color,edgecolor=fill_color,linewidth=0)
-        if zorder is not None:
-            poly.set_zorder(zorder)
-        if alpha is not None:
-            poly.set_alpha(alpha)
-        ax.add_patch(poly)
-        polys.append(poly)
-        npoly = npoly + 1
-        # ax.add_patch(polys)
-        # set axes limits to fit map region.
-        self.set_axes_limits(ax=ax)
-        # clip continent polygons to map limbs
-        polys,c = self._cliplimb(ax,polys)
-        return polys
 
-    def countyHotmap(self,region, aDay='20170304'):
-        values = []
-        adict = {}
-        for key,value in self.countySum[aDay].items():
-            adict[int(key)] = value
-        for key in sorted(adict.keys()):
-            val = adict[key]
-            if val >= 80000:
-                radio = 0
-            else:
-                radio = 1-val / 80000
-            values.append(radio)
-        values = np.array(values)
-        cmap = plt.cm.Blues
-        errorbar_colors = cmap(values)
-
-        region.set_facecolors(errorbar_colors)
 
     def project(self,x,y):
         '''
@@ -220,7 +168,7 @@ class Beijing(Basemap):
         return lines
     def loadlines(self,name,curdir='beijingJson',zorder=None,
                       linewidth=0.5,color='k',antialiased=1,ax=None,
-                      default_encoding='utf-8',linestyle='-'):
+                      default_encoding='utf-8',linestyle='-',linesalpha = 1):
         # get current axes instance (if none specified).
         filename = curdir+'/'+name+'.json'
         coords = json.load(codecs.open(filename, 'r', 'utf-8'))
@@ -232,6 +180,7 @@ class Beijing(Basemap):
         lines.set_color(color)
         lines.set_linewidth(linewidth)
         lines.set_linestyle(linestyle)
+        lines.set_alpha(linesalpha)
         lines.set_label('_nolabel_')
         if zorder is not None:
            lines.set_zorder(zorder)
@@ -401,16 +350,16 @@ class Beijing(Basemap):
         self.__dict__[name+'_info']=attributes
         return info
 
-    def pointmarked(self,file='counties.csv'):
-        import pandas as pd
-        file = configdir+file
-        csv=pd.read_csv(file)
-        name = [name for name in csv['NAME']]
-        x = csv['X'].tolist()
-        y = csv['Y'].tolist()
-        for i in range(len(name)):
-            X,Y=self(float(x[i]),float(y[i]))
-            plt.text(X,Y,name[i],horizontalalignment ='center')
+    # def pointmarked(self,file='counties.csv'):
+    #     import pandas as pd
+    #     file = configdir+file
+    #     csv=pd.read_csv(file)
+    #     name = [name for name in csv['NAME']]
+    #     x = csv['X'].tolist()
+    #     y = csv['Y'].tolist()
+    #     for i in range(len(name)):
+    #         X,Y=self(float(x[i]),float(y[i]))
+    #         plt.text(X,Y,name[i],horizontalalignment ='center')
 
 if __name__ == "__main__":
     map= Beijing(llcrnrlon=115.3,llcrnrlat=39.4,urcrnrlon=117.6,urcrnrlat=41.1,
