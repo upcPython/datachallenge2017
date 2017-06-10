@@ -10,6 +10,7 @@ import numpy as np
 from matplotlib.widgets import Button
 from regionHotmap import RegionHotmap
 from themeRiver import ThemeRiver
+from radar import RadarAx,radar_factory
 
 plt.rcParams['savefig.facecolor'] = "0.8"
 
@@ -27,6 +28,7 @@ def onMousePress(event):
         dateCtrl.onMousePressed(event)
         regionMap.draw(dateCtrl.day)
         riverCtrl.draw(dateCtrl.day)
+        radarCtrl.draw(dateCtrl.day)
         # print(event.xdata,event.ydata)
     if event.inaxes.name=='map':#map control
         regionMap.onMousePressed(event)
@@ -55,9 +57,8 @@ if __name__ == "__main__":
     plt.close('all')
 
 
-    fig = plt.figure()
+    fig = plt.figure(facecolor='b')
     fig.subplots_adjust(left=0.0, right=1, top=1, bottom=0.0)
-    fig.set_facecolor('b')
     fig.canvas.mpl_connect('button_press_event',onMousePress)
     fig.canvas.mpl_connect('key_press_event',onKeyPress)
     fig.canvas.mpl_connect('key_release_event',onKeyRelease)
@@ -101,11 +102,12 @@ if __name__ == "__main__":
     # axtitle.set_title('垃圾短信数据分析系统')
     # example_plot(axtitle)
 
-    # example_plot(ax1)
-    ax2 = fig.add_subplot(gs1[1])
-    ax2.axis('off')
-    example_plot(ax2)
-
+    theta = radar_factory(11, frame='polygon')
+    kw = {'projection': 'radar'}
+    axradar = fig.add_subplot(gs1[1],**kw)
+    axradar.name = 'radar'
+    # ax2.axis('off')
+    radarCtrl=RadarAx(axradar,theta)
     gs1.tight_layout(fig, rect=[0, 0, 0.3, 0.9])
 
 
