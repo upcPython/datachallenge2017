@@ -16,6 +16,7 @@ class RegionHotmap:
         self.beijing = Beijing(llcrnrlon=mapRect[0], llcrnrlat=mapRect[1], urcrnrlon=mapRect[2], urcrnrlat=mapRect[3], ax=ax)
         self.controlKey = False
         self.readdata()
+        self.button=None
 
     def readdata(self):
         with open(configdir+'measurements.json') as json_file:
@@ -39,14 +40,16 @@ class RegionHotmap:
             print("none")
             return
         if event.button == 1:  # left button
-            if event.dblclick:
-                self.ax.set_xlim(0, self.canvas_width)
-                self.ax.set_ylim(0, self.canvas_height)
-                self.beijing.level = 1
-            else:
-                self.onLeftClick(event)
-        elif event.button == 3:  # right button
-            self.onRightClick(event)
+            # if event.dblclick:
+            #     self.ax.set_xlim(0, self.canvas_width)
+            #     self.ax.set_ylim(0, self.canvas_height)
+            #     self.beijing.level = 1
+            # else:
+            #     self.onLeftClick(event)
+            self.onLeftClick(event)
+        # elif event.button == 3:  # right button
+        #     self.onRightClick(event)
+
     def countyHotmap(self, aDay='20170304'):
         values = []
         adict = {}
@@ -83,37 +86,45 @@ class RegionHotmap:
 
     def onLeftClick(self,event):
         # print(event.xdata,event.ydata)
-        if self.beijing.level < 4:
-            self.beijing.level += 1
-        self.moveMapCenter(event.xdata, event.ydata)
-
-    def onRightClick(self,event):
-        # print(event.xdata,event.ydata)
-        if self.beijing.level > 1:
-            self.beijing.level -= 1
-        self.moveMapCenter(event.xdata, event.ydata)
+        if self.button=='enlargebutton':
+            print('enlargebutton')
+            if self.beijing.level < 4:
+                self.beijing.level += 1
+            self.moveMapCenter(event.xdata, event.ydata)
+        elif self.button=='shrinkbutton':
+            print('shrinkbtton')
+            if self.beijing.level > 1:
+                self.beijing.level -= 1
+            self.moveMapCenter(event.xdata, event.ydata)
+        # elif self.button=='translationbutton':
+        #     self.moveMapCenter(event.xdata, event.ydata)
+    # def onRightClick(self,event):
+    #     # print(event.xdata,event.ydata)
+    #     if self.beijing.level > 1:
+    #         self.beijing.level -= 1
+    #     self.moveMapCenter(event.xdata, event.ydata)
 
 
     def onWheel(self,event):
-        if self.controlKey:
-            left, right = self.ax.get_xlim()
-            width = (right - left) / 16 * event.step
-            left += width
-            right += width
-            self.ax.set_xlim(left, right)
-        else:
-            top, bottom = self.ax.get_ylim()
-            height = (bottom - top) / 16 * event.step
-            top += height
-            bottom += height
-            self.ax.set_ylim(top, bottom)
-        # canvas.show()
-        # if event.step > 0:
-        #     print(event.step)
-        # else:
-        #     print(event.step)
-        # 滚轮往下滚动，缩小
-
+        if self.button=='translationbutton':
+            if self.controlKey:
+                left, right = self.ax.get_xlim()
+                width = (right - left) / 16 * event.step
+                left += width
+                right += width
+                self.ax.set_xlim(left, right)
+            else:
+                top, bottom = self.ax.get_ylim()
+                height = (bottom - top) / 16 * event.step
+                top += height
+                bottom += height
+                self.ax.set_ylim(top, bottom)
+                # canvas.show()
+                # if event.step > 0:
+                #     print(event.step)
+                # else:
+                #     print(event.step)
+                # 滚轮往下滚动，缩小
 
     def onKeyPress(self,event):
         global controlKey
@@ -126,20 +137,20 @@ class RegionHotmap:
         # print(type(event.inaxes))
         # print(event.xdata,event.ydata)
 
-    def on_homebutton_clicked(self):
-        print("home button clicked")
+    def on_homebutton_clicked(self,event):
         self.ax.set_xlim(0, self.canvas_width)
         self.ax.set_ylim(0, self.canvas_height)
         self.beijing.level = 1
+        self.ax.figure.canvas.draw()
 
-    def on_enlargebutton_clicked(self):
-        print("enlarge button clicked")
+    def on_enlargebutton_clicked(self,event):
+        self.button='enlargebutton'
 
-    def on_shrinkbutton_clicked(self):
-        print("shrink button clicked")
+    def on_shrinkbutton_clicked(self,event):
+        self.button='shrinkbutton'
 
-    def on_translationbutton_clicked(self):
-        print("translation button clicked")
+    def on_translationbutton_clicked(self,event):
+        self.button='translationbutton'
 if __name__ == "__main__":
     # t1 = np.arange(0, 5, 0.1)
     # t2 = np.arange(0, 5, 0.02)
