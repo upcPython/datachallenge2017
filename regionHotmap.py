@@ -31,11 +31,8 @@ class RegionHotmap:
         self.canvas_width,self.canvas_height = self.ax.dataLim.max
         listcolor = ['r', 'orange', 'yellow', '#40fd14', '#019529', '#2afeb7', '#d5ffff', '#fa5ff7', '#ffd1df',
                      '#fe7b7c', '#770001']
-        for i in range(5):
-            self.topic0 = self.beijing.loadlines('topic'+str(i),curdir='config/regionTopic',linewidth=1.5,color=listcolor[i],linesalpha=0.9)
-        # self.topic1 = self.beijing.loadlines('topic1',curdir='config/regionTopic',linewidth=1.5,color='r',linesalpha=0.9)
-    #     plt.sca(self.ax)
-    #     plt.pcolor(data, cmap=plt.cm.Blues)
+        # for i in range(5):
+        #     self.topic0 = self.beijing.loadlines('topic'+str(i),curdir='config/regionTopic',linewidth=1.5,color=listcolor[i],linesalpha=0.9)
 
     def onMousePressed(self,event):
         if event.inaxes == None:
@@ -90,6 +87,11 @@ class RegionHotmap:
 
     def onLeftClick(self,event):
         # print(event.xdata,event.ydata)
+        region = -1
+        for index,aPath in enumerate(self.region.get_paths()):
+            if aPath.contains_point((event.xdata,event.ydata)):
+                region = index
+        print('index',region)
         if self.button=='enlargebutton':
             # print('enlargebutton')
             if self.beijing.level < 4:

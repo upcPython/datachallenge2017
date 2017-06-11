@@ -10,7 +10,7 @@ rcParams['axes.unicode_minus']=False
 class ThemeRiver:
     def __init__(self,ax):
         self.ax=ax
-        self.label = ["银行诈骗", "黑发票", "积分兑换诈骗", "淘宝刷单招聘", "Apple设备诈骗", "移动短信", "小广告", "澳门赌博", "贷款抵押", "炒股诈骗",
+        self.label = ["银行诈骗", "黑发票", "积分诈骗", "刷单招聘", "Apple诈骗", "移动短信", "小广告", "澳门赌博", "贷款抵押", "炒股诈骗",
                  "特殊服务"]
         plt.sca(ax)
 
@@ -46,7 +46,7 @@ class ThemeRiver:
             #print(listcolor[i])
             a[i].set_facecolor(listcolor[i])
         plt.plot(facecolor='b')
-        legend = plt.legend(self.label,frameon=False, bbox_to_anchor=(-0.06, 1), ncol=1)
+        legend = plt.legend(self.label,frameon=False, bbox_to_anchor=(1.65, 1), ncol=1)
         ltext = legend.get_texts()
         plt.setp(ltext, fontsize=12)
         plt.xlabel('(小时)')

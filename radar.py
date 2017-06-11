@@ -115,7 +115,7 @@ def makedata(datename):
     #  4)Inclusion of both gas-phase species is present...
     linshi=load('config/JsonTime/'+datename+'.json')
     tuple=('',linshi)
-    data = [['银行诈骗', '黑发票', '积分兑换\n诈骗', '淘宝刷单\n招聘', 'Apple设备\n诈骗', '移动短信', '小广告', '澳门赌博', '贷款\n抵押', '炒股\n诈骗', '特殊服务']]
+    data = [['银行诈骗', '黑发票', '积分\n诈骗', '刷单\n招聘', 'Apple\n诈骗', '移动短信', '小广告', '澳门\n赌博', '贷款\n抵押', '炒股\n诈骗', '特殊服务']]
     data.append(tuple)
     return data
 
@@ -156,8 +156,12 @@ class RadarAx:
         # ax = axes[0]
         # ax = axes[0, 0]
         labels = ('0am-6am', '7am-12am', '12am-7pm', '7pm-12pm')
-        self.ax.legend(labels, loc=(0.9, .95),
-                           labelspacing=0.1, fontsize='small')
+        legend = plt.legend(labels, frameon=False, bbox_to_anchor=(1.625, 1), ncol=1)
+        ltext = legend.get_texts()
+        plt.setp(ltext, fontsize=12)
+        #self.ax.legend(labels, loc=(1.2, 0.5),
+                           #labelspacing=0.1, fontsize=12)
+        #ltext = self.ax.legend.get_texts()
         # fig.text(0.5, 0.965, 'Radar of Topic',
         #          horizontalalignment='center', color='white', weight='bold',
         #          size='large')

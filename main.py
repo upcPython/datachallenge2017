@@ -11,6 +11,7 @@ from matplotlib.widgets import Button
 from regionHotmap import RegionHotmap
 from themeRiver import ThemeRiver
 from radar import RadarAx,radar_factory
+from roadCloud import RoadCloud
 
 plt.rcParams['savefig.facecolor'] = "0.8"
 
@@ -84,10 +85,11 @@ if __name__ == "__main__":
     axr1.set_title("")
     axr1.set_xlabel("")
 
-    axr2 = fig.add_subplot(gs2[1])
-    example_plot(axr2)
-    axr2.set_title("")
-    axr2.set_xlabel("")
+    axcloud = fig.add_subplot(gs2[1])
+    axcloud.name = 'road'
+    axcloud.axis('off')
+    cloudCtrl = RoadCloud(axcloud)
+    cloudCtrl.draw()
 
     axdate = fig.add_subplot(gs2[0])
     axdate.name = 'date'
