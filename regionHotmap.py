@@ -15,6 +15,7 @@ class RegionHotmap:
         self.ax = ax
         self.beijing = Beijing(llcrnrlon=mapRect[0], llcrnrlat=mapRect[1], urcrnrlon=mapRect[2], urcrnrlat=mapRect[3], ax=ax)
         self.controlKey = False
+        self.roads = []
         self.readdata()
         self.button=None
 
@@ -22,16 +23,17 @@ class RegionHotmap:
         with open(configdir+'measurements.json') as json_file:
             self.countySum = json.load(json_file)
         self.region = self.beijing.loadlines('county_region',linewidth=2.5)
-        # road6 = self.beijing.loadlines('level6road_polyline',linewidth=3.5,color='#edf8b1',linesalpha=0.2)
-        # road4 = self.beijing.loadlines('level4road_polyline',linewidth=3.5,color='#edf8b1',linesalpha=0.2)
-        # road3 = self.beijing.loadlines('level3road_polyline',linewidth=3.5,color='#edf8b1',linesalpha=0.2)
-        road2 = self.beijing.loadlines('level2road_polyline',linewidth=3.5,color='#edf8b1',linesalpha=0.2)
-        self.road1 = self.beijing.loadlines('level1road_polyline',linewidth=1.5,color='#edf8b1',linesalpha=0.2)
+        for i in range(1,6):
+            road = self.beijing.loadlines('level'+str(i)+'road_polyline',linewidth=1.5,color='#edf8b1',linesalpha=0.2)
+            if i>2:
+                road.set_visible(False)
+            self.roads.append(road)
         self.canvas_width,self.canvas_height = self.ax.dataLim.max
-
-        self.topic0 = self.beijing.loadlines('topic0',curdir='config/regionTopic',linewidth=1.5,color='r',linesalpha=0.9)
+        listcolor = ['r', 'orange', 'yellow', '#40fd14', '#019529', '#2afeb7', '#d5ffff', '#fa5ff7', '#ffd1df',
+                     '#fe7b7c', '#770001']
+        for i in range(5):
+            self.topic0 = self.beijing.loadlines('topic'+str(i),curdir='config/regionTopic',linewidth=1.5,color=listcolor[i],linesalpha=0.9)
         # self.topic1 = self.beijing.loadlines('topic1',curdir='config/regionTopic',linewidth=1.5,color='r',linesalpha=0.9)
-        self.topic2 = self.beijing.loadlines('topic2',curdir='config/regionTopic',linewidth=1.5,color='g',linesalpha=0.9)
     #     plt.sca(self.ax)
     #     plt.pcolor(data, cmap=plt.cm.Blues)
 
@@ -79,6 +81,8 @@ class RegionHotmap:
         self.countyHotmap(day)
 
     def moveMapCenter(self,x, y):
+        for i in range(3,6):
+            self.roads[i-1].set_visible(i<=self.beijing.level+1)
         width = self.canvas_width / (2 ** self.beijing.level)
         height = self.canvas_height / (2 ** self.beijing.level)
         self.ax.set_xlim(x - width, x + width)
@@ -87,12 +91,12 @@ class RegionHotmap:
     def onLeftClick(self,event):
         # print(event.xdata,event.ydata)
         if self.button=='enlargebutton':
-            print('enlargebutton')
+            # print('enlargebutton')
             if self.beijing.level < 4:
                 self.beijing.level += 1
             self.moveMapCenter(event.xdata, event.ydata)
         elif self.button=='shrinkbutton':
-            print('shrinkbtton')
+            # print('shrinkbtton')
             if self.beijing.level > 1:
                 self.beijing.level -= 1
             self.moveMapCenter(event.xdata, event.ydata)

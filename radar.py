@@ -57,7 +57,7 @@ def radar_factory(num_vars, frame='circle'):
                 line.set_data(x, y)
 
         def set_varlabels(self, labels):
-            self.set_thetagrids(np.degrees(theta), labels,color='white')
+            self.set_thetagrids(np.degrees(theta), labels,color='k')
 
         def _gen_axes_patch(self):
             return self.draw_patch()

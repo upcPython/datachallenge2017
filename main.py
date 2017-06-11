@@ -60,7 +60,7 @@ if __name__ == "__main__":
     plt.close('all')
 
 
-    fig = plt.figure(facecolor='b')
+    fig = plt.figure(facecolor='#00BFFF')
     fig.subplots_adjust(left=0.0, right=1, top=1, bottom=0.0)
     fig.canvas.mpl_connect('button_press_event',onMousePress)
     fig.canvas.mpl_connect('key_press_event',onKeyPress)
@@ -70,7 +70,7 @@ if __name__ == "__main__":
     rect = 0, 0.9, 1, 0.1
     axtitle = fig.add_axes(rect)
     axtitle.name = 'title'
-    axtitle.patch.set_facecolor('b')
+    axtitle.patch.set_facecolor('#00BFFF')
     axtitle.axis('off')
     print(axtitle)
     # w,h = axtitle.dataLim.max
@@ -98,7 +98,7 @@ if __name__ == "__main__":
     gs1 = gridspec.GridSpec(2, 1)
     axriver = fig.add_subplot(gs1[0])
     axriver.name = 'river'
-    axriver.patch.set_facecolor('b')
+    axriver.patch.set_facecolor('#00BFFF')
     riverCtrl = ThemeRiver(axriver)
     # axriver.axis('off')
     riverCtrl.draw(dateCtrl.day)
@@ -118,7 +118,7 @@ if __name__ == "__main__":
     rect = 0.3, 0.3, 0.4, 0.6
     axmap = fig.add_axes(rect)
     axmap.name = 'map'
-    axmap.patch.set_facecolor('b')
+    axmap.patch.set_facecolor('#00BFFF')
     axmap.axis('off')
     regionMap = RegionHotmap(axmap)
     regionMap.draw(dateCtrl.day)

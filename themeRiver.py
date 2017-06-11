@@ -32,6 +32,13 @@ class ThemeRiver:
                 if data[i][j]>max:
                     max=data[i][j]
         plt.sca(self.ax)
+        self.ax.yaxis.set_ticks_position('right')
+        #self.ax.spines['top'].set_color('gold')
+        #self.ax.spines['bottom'].set_color('gold')
+        #self.ax.spines['right'].set_color('gold')
+        #self.ax.spines['left'].set_color('gold')
+        # self.ax.set_xticks([])
+        # self.ax.set_yticks([])
         self.ax.collections = []
         a = plt.stackplot(range(24), data.T, baseline='wiggle')
         listcolor=['r','orange','yellow','#40fd14','#019529','#2afeb7','#d5ffff','#fa5ff7','#ffd1df','#fe7b7c','#770001']
@@ -39,13 +46,12 @@ class ThemeRiver:
             #print(listcolor[i])
             a[i].set_facecolor(listcolor[i])
         plt.plot(facecolor='b')
-       # plt.legend( self.label,frameon=False,bbox_to_anchor=(-0.15, 0.60), ncol=1,fontsize=10)
-        legend = plt.legend(self.label,frameon=False, bbox_to_anchor=(-0.15, 0.60), ncol=1,fontsize=10)
+        legend = plt.legend(self.label,frameon=False, bbox_to_anchor=(-0.06, 1), ncol=1)
         ltext = legend.get_texts()
-        plt.setp(ltext, fontsize='small', color='w')
-
-        plt.xlim(0,24)
-        plt.ylim(-max*1.25,max*1.25)
+        plt.setp(ltext, fontsize=12)
+        plt.xlabel('(小时)')
+        plt.xticks(np.arange(0, 25, 4))
+        plt.ylim(-max*1.8,max*1)
 
 if __name__ == "__main__":
     fig = plt.figure()

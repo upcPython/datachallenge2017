@@ -61,7 +61,7 @@ class Beijing(Basemap):
         # self.readshapefile(mapdir+'county_region', 'county_region')
 
 
-    def project(self,x,y):
+    def project(self,x,y,inverse=False):
         '''
         :param x: longitude
         :param y: latitude
@@ -69,8 +69,7 @@ class Beijing(Basemap):
         '''
         x = [x]
         y = [y]
-        xa, ya = self(x, y)
-        # print(xa, ya)
+        xa, ya = self(x, y,inverse)
         xy = list(zip(xa, ya))
         return xy[0]
     def projectList(self,x,y):
@@ -80,7 +79,9 @@ class Beijing(Basemap):
         :return: a list and each element is a tuple with (x,y) with projected coordinate
         '''
         xa, ya = self(x, y)
-        # print(xa, ya)
+        # print(xa[0], ya[0])
+        # a,b = self(xa,ya,True)
+        # print(a[0], b[0])
         return list(zip(xa, ya))
     def readmapinfo(self,shapefile,name, default_encoding='utf-8'):
 
