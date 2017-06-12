@@ -12,6 +12,7 @@ from regionHotmap import RegionHotmap
 from themeRiver import ThemeRiver
 from radar import RadarAx,radar_factory
 from roadCloud import RoadCloud
+from numberlegend import Numberlegend
 
 plt.rcParams['savefig.facecolor'] = "0.8"
 
@@ -30,9 +31,12 @@ def onMousePress(event):
         regionMap.draw(dateCtrl.day)
         riverCtrl.draw(dateCtrl.day)
         radarCtrl.draw(dateCtrl.day)
+        phoneCtrl.draw(dateCtrl.day)
+        cloudCtrl.draw(regionMap.selectedregion,dateCtrl.day)
         # print(event.xdata,event.ydata)
     if event.inaxes.name=='map':#map control
         regionMap.onMousePressed(event)
+        cloudCtrl.draw(regionMap.selectedregion,dateCtrl.day)
     fig.canvas.draw()
 
 def onKeyPress(event):
@@ -80,21 +84,20 @@ if __name__ == "__main__":
 
     gs2 = gridspec.GridSpec(3, 1)
 
-    axr1 = fig.add_subplot(gs2[2])
-    example_plot(axr1)
-    axr1.set_title("")
-    axr1.set_xlabel("")
-
-    axcloud = fig.add_subplot(gs2[1])
-    axcloud.name = 'road'
-    axcloud.axis('off')
-    cloudCtrl = RoadCloud(axcloud)
-    cloudCtrl.draw()
-
     axdate = fig.add_subplot(gs2[0])
     axdate.name = 'date'
     axdate.axis('off')
     dateCtrl = DateAx(axdate)
+
+    axr2 = fig.add_subplot(gs2[1])
+    example_plot(axr2)
+    axr2.set_title("")
+    axr2.set_xlabel("")
+
+    axphone = fig.add_subplot(gs2[2])
+    axphone.name = 'phone'
+    phoneCtrl = Numberlegend(axphone)
+    phoneCtrl.draw(dateCtrl.day)
     gs2.tight_layout(fig, rect=[0.7, 0, 1, 0.9])
 
     gs1 = gridspec.GridSpec(2, 1)
@@ -150,11 +153,16 @@ if __name__ == "__main__":
     translation.on_clicked(regionMap.on_translationbutton_clicked)
 
 
+    # rect = 0.3, 0.0, 0.4, 0.3
+    # axcloud = fig.add_axes(rect)
     gs0 = gridspec.GridSpec(1, 2)
-    axdate = fig.add_subplot(gs0[0])
+    axcloud = fig.add_subplot(gs0[0])
+    axcloud.name = 'road'
+    axcloud.axis('off')
+    cloudCtrl = RoadCloud(axcloud)
+    cloudCtrl.draw()
     ax2 = fig.add_subplot(gs0[1])
 
-    example_plot(axdate)
     example_plot(ax2)
 
     gs0.tight_layout(fig, rect=[0.3, 0, 0.7, 0.3])

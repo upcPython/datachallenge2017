@@ -8,10 +8,11 @@ import matplotlib.pyplot as plt
 from matplotlib import rcParams
 rcParams['font.sans-serif']=['SimHei']
 rcParams['font.family']=['sans-serif']
-dis={0:'房山区',1:'门头沟区',2:'石景山',3:'昌平区',4:'延庆县',5:'怀柔区',6:'朝阳区',7:'大兴区',8:'崇文区',9:'丰台区',10:'海淀区',11:'宣武区',12:'西城区',13:'东城区',14:'通州区',17:'顺义区',19:'平谷区',20:'密云县'}
+dis={0:'房山区',1:'门头沟区',2:'石景山区',3:'昌平区',4:'延庆县',5:'怀柔区',6:'朝阳区',7:'大兴区',8:'崇文区',9:'丰台区',10:'海淀区',11:'宣武区',12:'西城区',13:'东城区',14:'通州区',17:'顺义区',19:'平谷区',20:'密云县'}
 class RoadCloud:
     def __init__(self,ax):
         self.ax=ax
+        plt.sca(ax)
 
     def makedata(self,district,date):
         def load(on):
@@ -21,8 +22,13 @@ class RoadCloud:
         dict = load('config/dicofblock/'+dis[district]+date+'.json')
         return dict
     def draw(self,district=6,date='20170304'):
-        plt.sca(self.ax)
         content = self.makedata(district,date)
+        if len(content)==0:
+            return
+        plt.sca(self.ax)
+        if len(self.ax.texts)>0:
+            self.ax.texts.pop()
+        plt.text(235,85,dis[district],fontsize=25)
         backgroud_Image= plt.imread('config/districtmap/'+dis[district]+'_'+str(district)+'.jpg')
         #plt.imshow(backgroud_Image)
         #plt.show()
@@ -36,12 +42,11 @@ class RoadCloud:
                        random_state=1,  # 设置有多少种随机生成状态，即有多少种配色方案
                        ).fit_words(content)
         plt.imshow(wc)
-
-        plt.title(dis[district],fontsize=25)
+        #plt.title(dis[district],fontsize=25)
 
 
 if __name__ == '__main__':
-    #dis={'0':'房山区','1':'门头沟区','2':'石景山','3':'昌平区','4':'延庆县','5':'怀柔区','6':'朝阳区','7':'大兴区','8':'崇文区','9':'丰台区','10':'海淀区','11':'宣武区','12':'西城区','13':'东城区','14':'通州区','17':'顺义区','19':'平谷区','20':'密云县'}
+    #dis={'0':'房山区','1':'门头沟区','2':'石景山区','3':'昌平区','4':'延庆县','5':'怀柔区','6':'朝阳区','7':'大兴区','8':'崇文区','9':'丰台区','10':'海淀区','11':'宣武区','12':'西城区','13':'东城区','14':'通州区','17':'顺义区','19':'平谷区','20':'密云县'}
     fig = plt.figure()
     ax = fig.gca()
     dataAx = RoadCloud(ax)

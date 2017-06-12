@@ -18,6 +18,7 @@ class RegionHotmap:
         self.roads = []
         self.readdata()
         self.button=None
+        self.selectedregion = 6  #6 means 朝阳区
 
     def readdata(self):
         with open(configdir+'measurements.json') as json_file:
@@ -29,10 +30,11 @@ class RegionHotmap:
                 road.set_visible(False)
             self.roads.append(road)
         self.canvas_width,self.canvas_height = self.ax.dataLim.max
-        listcolor = ['r', 'orange', 'yellow', '#40fd14', '#019529', '#2afeb7', '#d5ffff', '#fa5ff7', '#ffd1df',
-                     '#fe7b7c', '#770001']
-        # for i in range(5):
-        #     self.topic0 = self.beijing.loadlines('topic'+str(i),curdir='config/regionTopic',linewidth=1.5,color=listcolor[i],linesalpha=0.9)
+        listcolor = ['r', 'orange', 'yellow', '#40fd14', '#fa5ff7', '#ffd1df',
+                     '#fe7b7c']
+        # self.topic0 = self.beijing.loadlines('one_load',curdir='config/regionTopic',linewidth=1.5,color='r',linesalpha=0.9)
+        for i in range(7):
+            self.beijing.loadlines('topic_'+str(i),curdir='config/regionTopic',linewidth=1.5,color=listcolor[i],linesalpha=0.9)
 
     def onMousePressed(self,event):
         if event.inaxes == None:
@@ -91,7 +93,8 @@ class RegionHotmap:
         for index,aPath in enumerate(self.region.get_paths()):
             if aPath.contains_point((event.xdata,event.ydata)):
                 region = index
-        print('index',region)
+        if region in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,17,19,20]:#rational region
+            self.selectedregion = region
         if self.button=='enlargebutton':
             # print('enlargebutton')
             if self.beijing.level < 4:
@@ -147,6 +150,8 @@ class RegionHotmap:
         self.ax.set_xlim(0, self.canvas_width)
         self.ax.set_ylim(0, self.canvas_height)
         self.beijing.level = 1
+        for i in range(3,6):
+            self.roads[i-1].set_visible(i<=self.beijing.level+1)
         self.ax.figure.canvas.draw()
 
     def on_enlargebutton_clicked(self,event):
