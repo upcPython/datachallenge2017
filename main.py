@@ -13,6 +13,7 @@ from themeRiver import ThemeRiver
 from radar import RadarAx,radar_factory
 from roadCloud import RoadCloud
 from numberlegend import Numberlegend
+from bubbleAx import BubbleAx
 
 plt.rcParams['savefig.facecolor'] = "0.8"
 
@@ -32,6 +33,7 @@ def onMousePress(event):
         riverCtrl.draw(dateCtrl.day)
         radarCtrl.draw(dateCtrl.day)
         phoneCtrl.draw(dateCtrl.day)
+        bubbleCtrl.draw(dateCtrl.day)
         cloudCtrl.draw(regionMap.selectedregion,dateCtrl.day)
         # print(event.xdata,event.ydata)
     if event.inaxes.name=='map':#map control
@@ -50,6 +52,11 @@ def onKeyRelease(event):
         return
     if event.inaxes.name=='map':#map control
         regionMap.onKeyRelease(event)
+def onMouseMove(event):
+    if event.inaxes is None:
+        return
+    if event.inaxes.name=='bubble':#bubble control
+        bubbleCtrl.onMouseMove(event)
 def onWheel(event):
     if event.inaxes is None:
         return
@@ -71,6 +78,7 @@ if __name__ == "__main__":
     fig.canvas.mpl_connect('key_press_event',onKeyPress)
     fig.canvas.mpl_connect('key_release_event',onKeyRelease)
     fig.canvas.mpl_connect("scroll_event", onWheel)
+    fig.canvas.mpl_connect('motion_notify_event', onMouseMove)
 
     rect = 0, 0.9, 1, 0.1
     axtitle = fig.add_axes(rect)
@@ -89,10 +97,11 @@ if __name__ == "__main__":
     axdate.axis('off')
     dateCtrl = DateAx(axdate)
 
-    axr2 = fig.add_subplot(gs2[1])
-    example_plot(axr2)
-    axr2.set_title("")
-    axr2.set_xlabel("")
+    axbubble = fig.add_subplot(gs2[1])
+    axbubble.name = 'bubble'
+    axbubble.axis('off')
+    bubbleCtrl = BubbleAx(axbubble)
+    bubbleCtrl.draw(dateCtrl.day)
 
     axphone = fig.add_subplot(gs2[2])
     axphone.name = 'phone'

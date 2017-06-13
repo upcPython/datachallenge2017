@@ -16,6 +16,7 @@ class RegionHotmap:
         self.beijing = Beijing(llcrnrlon=mapRect[0], llcrnrlat=mapRect[1], urcrnrlon=mapRect[2], urcrnrlat=mapRect[3], ax=ax)
         self.controlKey = False
         self.roads = []
+        self.highlightroads = []
         self.readdata()
         self.button=None
         self.selectedregion = 6  #6 means 朝阳区
@@ -30,11 +31,7 @@ class RegionHotmap:
                 road.set_visible(False)
             self.roads.append(road)
         self.canvas_width,self.canvas_height = self.ax.dataLim.max
-        listcolor = ['r', 'orange', 'yellow', '#40fd14', '#fa5ff7', '#ffd1df',
-                     '#fe7b7c']
         # self.topic0 = self.beijing.loadlines('one_load',curdir='config/regionTopic',linewidth=1.5,color='r',linesalpha=0.9)
-        for i in range(7):
-            self.beijing.loadlines('topic_'+str(i),curdir='config/regionTopic',linewidth=1.5,color=listcolor[i],linesalpha=0.9)
 
     def onMousePressed(self,event):
         if event.inaxes == None:
@@ -77,7 +74,14 @@ class RegionHotmap:
         # cb.set_ticklabels(('0','1','2','3','4','5','6','7','8'))
 
     def draw(self,day):
+        plt.sca(self.ax)
         self.countyHotmap(day)
+        listcolor = ['r', 'orange', 'yellow', '#40fd14', '#fa5ff7', '#ffd1df', '#fe7b7c']
+        if len(self.highlightroads)==7:
+            for i in range(7):
+                self.highlightroads[i] = []
+        for i in range(7):
+            self.highlightroads.append(self.beijing.loadlines(day+'/topic_'+str(i),curdir='config/regionTopic',linewidth=1.5,color=listcolor[i],linesalpha=0.9))
 
     def moveMapCenter(self,x, y):
         for i in range(3,6):
