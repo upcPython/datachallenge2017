@@ -13,7 +13,9 @@ from themeRiver import ThemeRiver
 from radar import RadarAx,radar_factory
 from roadCloud import RoadCloud
 from numberlegend import Numberlegend
-from bubbleAx import BubbleAx
+# from bubbleAx import BubbleAx
+from pieChart import PieChart
+from recttree import RectTreeAx
 
 plt.rcParams['savefig.facecolor'] = "0.8"
 
@@ -33,12 +35,16 @@ def onMousePress(event):
         riverCtrl.draw(dateCtrl.day)
         radarCtrl.draw(dateCtrl.day)
         phoneCtrl.draw(dateCtrl.day)
-        bubbleCtrl.draw(dateCtrl.day)
+        recttreeCtrl.draw(dateCtrl.day)
         cloudCtrl.draw(regionMap.selectedregion,dateCtrl.day)
+        pieCtrl.draw(regionMap.selectedregion,dateCtrl.day)
         # print(event.xdata,event.ydata)
     if event.inaxes.name=='map':#map control
         regionMap.onMousePressed(event)
         cloudCtrl.draw(regionMap.selectedregion,dateCtrl.day)
+        pieCtrl.draw(regionMap.selectedregion,dateCtrl.day)
+    if event.inaxes.name=='recttree':
+        recttreeCtrl.onMousePress(event)
     fig.canvas.draw()
 
 def onKeyPress(event):
@@ -55,8 +61,8 @@ def onKeyRelease(event):
 def onMouseMove(event):
     if event.inaxes is None:
         return
-    if event.inaxes.name=='bubble':#bubble control
-        bubbleCtrl.onMouseMove(event)
+    if event.inaxes.name=='recttree':#bubble control
+        recttreeCtrl.onMouseMove(event)
 def onWheel(event):
     if event.inaxes is None:
         return
@@ -71,8 +77,9 @@ if __name__ == "__main__":
     rcParams['font.family'] = 'sans-serif'
     plt.close('all')
 
-
     fig = plt.figure(facecolor='#00BFFF')
+    fig.canvas.set_window_title('垃圾短信数据分析系统')
+    # fig.set_label('')
     fig.subplots_adjust(left=0.0, right=1, top=1, bottom=0.0)
     fig.canvas.mpl_connect('button_press_event',onMousePress)
     fig.canvas.mpl_connect('key_press_event',onKeyPress)
@@ -97,11 +104,16 @@ if __name__ == "__main__":
     axdate.axis('off')
     dateCtrl = DateAx(axdate)
 
-    axbubble = fig.add_subplot(gs2[1])
-    axbubble.name = 'bubble'
-    axbubble.axis('off')
-    bubbleCtrl = BubbleAx(axbubble)
-    bubbleCtrl.draw(dateCtrl.day)
+    # axbubble = fig.add_subplot(gs2[1])
+    # axbubble.name = 'bubble'
+    # axbubble.axis('off')
+    # bubbleCtrl = BubbleAx(axbubble)
+    # bubbleCtrl.draw(dateCtrl.day)
+    axrecttree = fig.add_subplot(gs2[1])
+    axrecttree.name = 'recttree'
+    axrecttree.axis('off')
+    recttreeCtrl = RectTreeAx(axrecttree)
+    recttreeCtrl.draw(dateCtrl.day)
 
     axphone = fig.add_subplot(gs2[2])
     axphone.name = 'phone'
@@ -148,18 +160,22 @@ if __name__ == "__main__":
     enlargeimg = cv2.imread('image\enlarge.png')
     shrinkimg = cv2.imread('image\shrink.png')
     translationimg = cv2.imread('image/translation.png')
+    roadimg = cv2.imread('image/road.png')
     homeset = plt.axes([0.31, 0.81, 0.035, 0.035])
     enlargeset = plt.axes([0.31, 0.76, 0.035, 0.035])
     shrinkset = plt.axes([0.31, 0.71, 0.035, 0.035])
     translationset = plt.axes([0.31, 0.66, 0.035, 0.035])
+    roadset = plt.axes([0.31, 0.61, 0.035, 0.035])
     home = Button(homeset, '', homeimg, hovercolor='0.2')
     enlarge = Button(enlargeset, '', enlargeimg)
     shrink = Button(shrinkset, '', shrinkimg)
     translation = Button(translationset, '', translationimg)
+    road = Button(roadset, '', roadimg, hovercolor='0.2')
     home.on_clicked(regionMap.on_homebutton_clicked)
     enlarge.on_clicked(regionMap.on_enlargebutton_clicked)
     shrink.on_clicked(regionMap.on_shrinkbutton_clicked)
     translation.on_clicked(regionMap.on_translationbutton_clicked)
+    road.on_clicked(regionMap.on_roadbutton_clicked)
 
 
     # rect = 0.3, 0.0, 0.4, 0.3
@@ -169,10 +185,13 @@ if __name__ == "__main__":
     axcloud.name = 'road'
     axcloud.axis('off')
     cloudCtrl = RoadCloud(axcloud)
-    cloudCtrl.draw()
-    ax2 = fig.add_subplot(gs0[1])
+    cloudCtrl.draw(regionMap.selectedregion,dateCtrl.day)
+    axpie = fig.add_subplot(gs0[1], projection='polar')
+    axpie.name = 'pie'
+    pieCtrl = PieChart(axpie)
+    pieCtrl.draw()
+    pieCtrl.draw(regionMap.selectedregion,dateCtrl.day)
 
-    example_plot(ax2)
 
     gs0.tight_layout(fig, rect=[0.3, 0, 0.7, 0.3])
     # ax1 = fig.add_subplot(gstitle[0])

@@ -20,6 +20,7 @@ class RegionHotmap:
         self.readdata()
         self.button=None
         self.selectedregion = 6  #6 means 朝阳区
+        self.showroad = False
 
     def readdata(self):
         with open(configdir+'measurements.json') as json_file:
@@ -81,7 +82,9 @@ class RegionHotmap:
             for i in range(7):
                 self.highlightroads[i] = []
         for i in range(7):
-            self.highlightroads.append(self.beijing.loadlines(day+'/topic_'+str(i),curdir='config/regionTopic',linewidth=1.5,color=listcolor[i],linesalpha=0.9))
+            road = self.beijing.loadlines(day+'/topic_'+str(i),curdir='config/regionTopic',linewidth=1.5,color=listcolor[i],linesalpha=0.9)
+            self.highlightroads.append(road)
+            road.set_visible(self.showroad)
 
     def moveMapCenter(self,x, y):
         for i in range(3,6):
@@ -166,6 +169,11 @@ class RegionHotmap:
 
     def on_translationbutton_clicked(self,event):
         self.button='translationbutton'
+    def on_roadbutton_clicked(self,event):
+        self.showroad= not self.showroad
+        for i in range(7):
+            self.highlightroads[i].set_visible(self.showroad)
+        self.ax.figure.canvas.draw()
 if __name__ == "__main__":
     # t1 = np.arange(0, 5, 0.1)
     # t2 = np.arange(0, 5, 0.02)
